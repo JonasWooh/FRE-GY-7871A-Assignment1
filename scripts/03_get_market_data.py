@@ -32,19 +32,12 @@ from src.config import (  # noqa: E402
 )
 from src.edgar import EdgarClient  # noqa: E402
 from src.market import download_prices, download_volume  # noqa: E402
+from src.corporate_actions import download_as_traded  # noqa: E402
 
 FACTS_URL = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
 
-# Preference order. The cover-page count is the cleanest, but multi-class filers
-# report it per share class and it then disappears from the flat API, so the
-# income-statement share counts are the fallback. All of them are reported ON the
-# filing being scored, which is the property that matters.
-SHARE_TAGS = [
-    ("dei", "EntityCommonStockSharesOutstanding"),
-    ("us-gaap", "WeightedAverageNumberOfDilutedSharesOutstanding"),
-    ("us-gaap", "WeightedAverageNumberOfSharesOutstandingBasic"),
-    ("us-gaap", "CommonStockSharesOutstanding"),
-]
+# Use cover-page shares only. Weighted-average EPS denominators are not an
+# outstanding share count and must not silently enter the market-cap control.
 # Prices need a run-up before the first filing (for the [-60,-6] controls) and a
 # run-out after the last one (for the [0,+3] window).
 PRICE_START = "2020-09-01"
@@ -52,31 +45,32 @@ PRICE_END = "2026-03-31"
 
 
 def get_shares(client: EdgarClient, meta: pd.DataFrame) -> pd.DataFrame:
-    """Share count as reported on each filing, using the first tag that has it."""
+    """Exact-accession cover-page shares; latest eligible date, no EPS proxies.
+
+    Conflicting values on the latest date are excluded, not chosen by API order.
+    Missing flat-API facts (including some multi-class issuers) remain missing.
+    """
     rows = []
+    meta = meta.drop_duplicates(subset="accession")
     for i, cik in enumerate(sorted(meta["cik"].unique()), 1):
-        try:
-            facts = client._get(FACTS_URL.format(cik=str(cik).zfill(10))).json().get("facts", {})
-        except Exception:  # noqa: BLE001
-            continue
-        by_accession: dict[str, dict] = {}
-        for ns, tag in reversed(SHARE_TAGS):        # least preferred first, overwrite
-            for arr in facts.get(ns, {}).get(tag, {}).get("units", {}).values():
-                for fact in arr:
-                    accn = fact.get("accn")
-                    if not accn or fact.get("val") in (None, 0):
-                        continue
-                    by_accession[accn] = {
-                        "cik": str(cik).zfill(10),
-                        "accession": accn,
-                        "shares_outstanding": fact["val"],
-                        "shares_as_of": fact.get("end"),
-                        "shares_tag": f"{ns}:{tag}",
-                    }
-        rows.extend(by_accession.values())
+        facts = client._get(FACTS_URL.format(cik=str(cik).zfill(10))).json().get("facts", {})
+        arr = facts.get("dei", {}).get("EntityCommonStockSharesOutstanding", {}).get("units", {}).get("shares", [])
+        for filing in meta.loc[meta["cik"] == cik].itertuples():
+            candidates = [f for f in arr if f.get("accn") == filing.accession
+                          and f.get("val", 0) > 0 and f.get("end")
+                          and f["end"] <= str(filing.filing_date)[:10]]
+            if not candidates:
+                continue
+            latest = max(f["end"] for f in candidates)
+            values = {f["val"] for f in candidates if f["end"] == latest}
+            if len(values) != 1:
+                continue
+            rows.append({"cik": str(cik).zfill(10), "accession": filing.accession,
+                         "shares_outstanding": values.pop(), "shares_as_of": latest,
+                         "shares_tag": "dei:EntityCommonStockSharesOutstanding"})
         if i % 20 == 0:
             print(f"  company facts: {i} companies...")
-    return pd.DataFrame(rows).drop_duplicates(subset=["accession"], keep="last")
+    return pd.DataFrame(rows, columns=["cik", "accession", "shares_outstanding", "shares_as_of", "shares_tag"])
 
 
 def main() -> int:
@@ -92,6 +86,9 @@ def main() -> int:
 
     vol = download_volume(tickers, PRICE_START, PRICE_END)
     print(f"volume:  {vol.shape[0]} days x {vol.shape[1]} tickers -> {PRICE_DIR / 'volume.csv'}")
+
+    download_as_traded(tickers, PRICE_START, PRICE_DIR)
+    print(f"Historical as-traded prices and volume saved under {PRICE_DIR}")
 
     if VIX_TICKER in px.columns:
         print(f"VIX:     {px[VIX_TICKER].notna().sum()} days, mean "

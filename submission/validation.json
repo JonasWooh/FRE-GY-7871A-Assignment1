@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "final_filings": 1002,
+  "final_firms": 60,
+  "notebook_executed_cells": 9,
+  "notebook_tables_match_csv": true,
+  "pdf_pages": 8,
+  "pdf_exhibits_present": true,
+  "pdf_ciks_exact": true,
+  "downloaded_filing_and_price_data_included": false,
+  "instructor_frozen_holdings_included": true,
+  "scope": "Inventory and saved-output consistency; run pytest and inspect rendered PDF separately."
+}

@@ -1,20 +1,17 @@
 # AI use disclosure
 
-Required by the syllabus. One paragraph is enough. Undisclosed use is an
-integrity violation; disclosed use costs you nothing.
+**Tools used:** OpenAI Codex, local Python execution, and web retrieval of the assignment repository, SEC records, and materials related to the Loughran-McDonald methodology.
 
-Replace everything below.
+**How I used AI:** I used Codex as an implementation, debugging, and verification assistant throughout the project.I first analysed the assignment requirements and research questions, broke the task into individual methodological and implementation problems, and discussed possible approaches with the AI. During implementation, I repeatedly examined intermediate results, raised issues or inconsistencies, proposed solutions for specific methodological and data-handling problems, and asked Codex to implement or revise the corresponding code. Codex also assisted with environment setup, running the instructor's download scripts, implementing the tone measures, event-date logic, sample filters, statistical analysis, and performing automated checks.
 
----
+**My contribution:** I played an active role from the initial formulation of the problem through the detailed implementation and final review. I interpreted the research questions and assignment requirements, determined how the different stages of the analysis should fit together, evaluated alternative approaches, and worked through methodological and implementation details with the AI. For a number of issues encountered during the project, I identified the underlying problem or discussed it with the AI and proposed the solution or the direction in which the solution should be developed. I used the resulting discussion and intermediate outputs to decide when the analysis needed to be revised and what corrections should be made.
 
-**Tools used:**
+Although the main code implementation received substantial AI assistance, I did not treat the generated code or its outputs as automatically correct. I personally inspected the code, reviewed its execution logic, and checked how the individual processing steps connected the raw inputs to the final reported results. I also reviewed the report itself, including the interpretation of results, wording, presentation, and layout, and requested revisions where necessary. My contribution therefore included substantive problem analysis, methodological reasoning, solution development, iterative review, and manual verification in addition to directing the AI-assisted implementation.
 
-**What I used them for:**
-(e.g. "Claude for debugging the two-way clustered standard errors, and for a first
-draft of the quintile plotting code, which I then rewrote to sort within quarter.")
+**Errors found and corrected:** During the iterative review and validation process, Codex helped identify an important security-identity problem in which a ticker-only lookup had incorrectly matched Airbus to AAR and had merged Discovery with Dassault Systemes. I reviewed the issue and the resulting correction process. The lookup was replaced with reviewed security-identity mappings based on SEC issuer information, and 19 incorrectly included AAR filings were removed from the final corpus. The affected IDF values, standardised tone scores, and regressions were then recomputed.
 
-**What I wrote myself:**
+This correction changed the 10-Q proportional-return p-value from 0.04499 to 0.05129. Accordingly, the revised report no longer describes that result as statistically significant at the 5% level. The review also led to a clearer distinction between 17 observations excluded because price data were missing and 46 observations excluded because of the low-price filter, with the affected holdings listed separately in an appendix.
 
-**Anything the model got wrong that I had to correct:**
-(This one is worth writing honestly. It is often the most interesting thing in the
-file, and it tells me you were reading the output rather than pasting it.)
+**Checks and remaining limitations:** The completed workflow included checks of the formulas, trading-day windows, split-adjustment units, exact-filing share calculations, issuer-identity collisions, and reproducibility of the analysis. Codex performed automated tests and reproduction checks, while I separately reviewed the code and its execution logic rather than relying on those automated checks as a substitute for manual verification.
+
+AI provided substantial assistance with coding, execution, debugging, and automated verification, but the project involved continuing human input in problem formulation, methodological analysis, detailed solution development, interpretation, and review. I remained responsible for understanding the analytical workflow and for independently examining the code and logic used to produce the reported results.

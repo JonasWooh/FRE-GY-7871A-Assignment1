@@ -3,10 +3,26 @@
 FRE-GY 7871 A · NLP and the Investment Process · Fall 2026
 Out: Session 1 (5 Sep 2026) · Due: 9:00 AM, Session 2 (12 Sep 2026)
 
-**This repository gets you the data. Everything after that is yours to write.**
+## Student submission
+
+Jonas Wu (jw9452). The completed analysis uses 1,002 filings from 60 firms,
+with 248 annual reports and 754 quarterly reports.
+
+- [Executed notebook](Assignment1.ipynb)
+- [Final PDF report](submission/Assignment1_Report.pdf)
+- [AI use disclosure](AI_USE.md)
+- [Methods and limitations](METHODS.md)
+- [Reproduction instructions](RUN_LOCAL.md)
+
+The data pipeline began with the instructor's
+[starter repository](https://github.com/anmolsingh0219/FRE-GY-7871A-Assignment1).
+This submission adds the analysis, tests and report, and corrects the security
+identity matching. Downloaded filings, prices and text caches are excluded.
+The instructor's original frozen holdings input is retained for reproduction.
 
 The full assignment brief is on Brightspace and it is the specification. This file
-only covers running the pipeline.
+covers the submission and the data pipeline. Follow RUN_LOCAL.md to reproduce
+the completed analysis; the sections below describe the starter workflow.
 
 ---
 
@@ -17,7 +33,7 @@ Four scripts that put a clean dataset on your disk:
 | Script | Output | Time |
 |---|---|---|
 | `00_get_lexicons.py` | The Loughran-McDonald Master Dictionary, in `data/lexicons/` | ~15 s |
-| `01_build_universe.py` | The 124 ARK holdings resolved to SEC filers, in `data/universe/universe.csv` | ~1 min |
+| `01_build_universe.py` | Reviewed identities for all 130 frozen security records; 92 eligible listings in `data/universe/universe.csv`, plus the complete exclusion audit | ~1 min |
 | `02_download_filings.py` | ~1,700 filings as extracted text, plus `data/interim/filings_meta.csv` | ~25 min |
 | `03_get_market_data.py` | Daily prices, volume, VIX and per-filing share counts, in `data/prices/` | ~3 min |
 
@@ -46,9 +62,9 @@ If you have genuinely tried and it still will not work, email
 **axs10695@nyu.edu** and the corpus will be sent to you directly. Do that only
 after attempting the download, and say what you tried and what the error was.
 
-## What you write
+## Analysis implemented in this submission
 
-Everything else, in your own notebook, from the specification in the brief:
+The notebook implements the remaining steps from the assignment brief:
 
 - the two tone measures, proportional and tf.idf
 - the trading calendar, the day-0 rule, and the filing-period excess return
@@ -56,8 +72,8 @@ Everything else, in your own notebook, from the specification in the brief:
 - the sample filters, the controls, and the waterfall in Table 1
 - all seven exhibits and the regressions behind them
 
-There is no notebook template and there are no tests in this repository. Structure
-your own notebook around the exhibits in the brief, in that order.
+The executed notebook follows the exhibit order in the brief. Tests are in
+`tests/`; run `python -m pytest -q` after installing the environment.
 
 ---
 

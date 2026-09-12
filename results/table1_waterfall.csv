@@ -1,0 +1,15 @@
+stage,remaining,removed
+Eligible SEC filings in 2021-2025,1683,0
+Downloaded and parsed,1683,0
+Unique accession,1663,20
+Required forms and filing dates,1663,0
+"At least 2,000 parsed tokens (both forms)",1663,0
+Observed acceptance and tradable day 0,1663,0
+Unambiguous exact-filing cover-page shares,1070,593
+Observed unadjusted previous-session close,1053,17
+Unadjusted previous-session close at least USD 3,1007,46
+Complete four-day stock and SPY returns,1007,0
+Complete 55-day pre-filing return window,1002,5
+Complete 63-day post-filing return window,1002,0
+Complete positive pre-filing volume control,1002,0
+Finite size and turnover controls,1002,0

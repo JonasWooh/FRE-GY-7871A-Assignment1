@@ -1,0 +1,27 @@
+{
+  "snapshot_positions": 226,
+  "snapshot_securities": 130,
+  "holding_status_counts": {
+    "domestic_filer": 92,
+    "no_10x_filings": 31,
+    "fund_holding": 4,
+    "no_verified_sec_match": 3
+  },
+  "cik_matches": 123,
+  "domestic_filers": 92,
+  "eligible_unique_ciks": 91,
+  "eligible_filings": 1683,
+  "day0_moved_before_market_filters": 944,
+  "day0_moved_final": 543,
+  "final_filings": 1002,
+  "final_firms": 60,
+  "negative_words": 2355,
+  "uncertainty_words": 297,
+  "lexicon_overlap": 40,
+  "total_final_tokens": 25838824,
+  "forms": {
+    "10-Q": 754,
+    "10-K": 248
+  },
+  "dictionary_vintage": "Downloaded from the starter repository's specified URL"
+}

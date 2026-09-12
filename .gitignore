@@ -9,6 +9,7 @@ data/**
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+.pytest_cache/
 .venv/
 venv/
 .env
@@ -19,3 +20,4 @@ outputs/*
 # Instructor-built data archive, distributed as a GitHub Release asset
 ark_filings_*.tar.gz
 download.log
+submission/*.zip
