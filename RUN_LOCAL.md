@@ -63,9 +63,10 @@ It does not publish to GitHub or upload to Brightspace.
 
 The brief requires a viewable personal GitHub repository with the executed
 notebook, code and AI disclosure; upload the PDF and repository URL to
-Brightspace. The cloned origin is the instructor's source repository, not a
-student-owned submission destination. Publishing or uploading has not been done
-by these scripts.
+Brightspace. The public student repository is
+https://github.com/JonasWooh/FRE-GY-7871A-Assignment1 . The local `origin`
+points to this repository; `upstream` retains the instructor's source repository.
+The files have been published to GitHub. Brightspace submission remains pending.
 
 Do not add downloaded data or the environment to Git. The original frozen
 holdings input remains part of the starter repository. Aggregated exhibits are

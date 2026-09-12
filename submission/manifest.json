@@ -26,7 +26,7 @@
   "results/table5_volatility.csv": "ffa92fe0b7a13698513702c2cb4e1080fc5d48341986c659eb7959b2b8ae0a65",
   "results/table6_power.csv": "b82d33c0732f4db2b2cfbc6c0751685b02d1e8b8d151ae4e060c756696774bee",
   "results/table6_returns.csv": "a79e5f38571ba8bcd38428c4d87797050efb22c0c08bc5a11170cff94f3edd17",
-  "RUN_LOCAL.md": "434a6d8cbfcb5f09c01167a9aa030668f67894e64be4222e2aa5c0f8805ebbaa",
+  "RUN_LOCAL.md": "2a5ed3b0a47f779a3e40cf5f627b4e9419ab9adf126eb10185d2cd2b0aa62309",
   "scripts/00_get_lexicons.py": "93202808c5855cdb5710e4639a21ab91902560a43938f82b35c90ca09756d189",
   "scripts/01_build_universe.py": "5211ba31cc11c500905407a1a5691b90b62d718c2c4e0547e49b124103824e1b",
   "scripts/02_download_filings.py": "59a481e12f3602cd3e01e2389c9ca70768ed9e7b9995c451870c5e33f3f6c5ec",
