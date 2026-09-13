@@ -1,7 +1,7 @@
 form,weighting,n,firms,quarters,cluster_df,cluster_se,mde_80pct,interpretation
 Pooled,proportional,1002,60,20,19,0.0028475249608745346,0.00835647570883937,"Approximate 80% power, two-sided 5%, return effect per common-sample 1 SD tone"
-Pooled,tfidf,1002,60,20,19,0.0075812163220698595,0.02224818075672865,"Approximate 80% power, two-sided 5%, return effect per common-sample 1 SD tone"
+Pooled,tfidf,1002,60,20,19,0.007581216322082669,0.022248180756766243,"Approximate 80% power, two-sided 5%, return effect per common-sample 1 SD tone"
 10-K,proportional,248,57,20,19,0.018433763112716325,0.054096556058495046,"Approximate 80% power, two-sided 5%, return effect per common-sample 1 SD tone"
-10-K,tfidf,248,57,20,19,0.01490986257956687,0.043755157963573474,"Approximate 80% power, two-sided 5%, return effect per common-sample 1 SD tone"
+10-K,tfidf,248,57,20,19,0.014909862579507478,0.04375515796339918,"Approximate 80% power, two-sided 5%, return effect per common-sample 1 SD tone"
 10-Q,proportional,754,57,20,19,0.003311019864672896,0.00971666884427454,"Approximate 80% power, two-sided 5%, return effect per common-sample 1 SD tone"
-10-Q,tfidf,754,57,20,19,0.00803433829391134,0.023577933016274012,"Approximate 80% power, two-sided 5%, return effect per common-sample 1 SD tone"
+10-Q,tfidf,754,57,20,19,0.008034338293893719,0.0235779330162223,"Approximate 80% power, two-sided 5%, return effect per common-sample 1 SD tone"
