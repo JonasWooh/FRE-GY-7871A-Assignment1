@@ -7,7 +7,7 @@ import pandas as pd
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
+from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY, TA_RIGHT
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,11 +24,14 @@ def main():
     summary=get('table2_summary'); words=get('table3_words'); trends=get('table4_trends')
     vol=get('table5_volatility'); ret=get('table6_returns'); power=get('table6_power')
     holdings=pd.read_csv(RESULTS/'table1_holdings.csv', dtype={'cik': str}).fillna('')
+    companies=get('company_top5')
     waterfall=get('table1_waterfall')
     styles=getSampleStyleSheet()
     styles.add(ParagraphStyle(name='BodySmall',fontName='Times-Roman',fontSize=10.5,leading=13,spaceAfter=8,alignment=TA_JUSTIFY))
     styles.add(ParagraphStyle(name='CellSmall',fontName='Times-Roman',fontSize=8,leading=9))
     styles.add(ParagraphStyle(name='CellHeader',parent=styles['CellSmall'],fontName='Times-Bold'))
+    styles.add(ParagraphStyle(name='CellNumber',parent=styles['CellSmall'],alignment=TA_RIGHT))
+    styles.add(ParagraphStyle(name='Abstract',parent=styles['BodySmall'],fontSize=10,leading=12))
     styles.add(ParagraphStyle(name='TitleSmall',fontName='Times-Bold',fontSize=16,leading=20,spaceAfter=12,alignment=TA_CENTER))
     styles.add(ParagraphStyle(name='Author',fontName='Times-Roman',fontSize=11,leading=14,spaceAfter=16,alignment=TA_CENTER))
     for name, size in [('Heading1', 13), ('Heading2', 11)]:
@@ -45,13 +48,20 @@ def main():
     def paragraph(text):
         story.append(Paragraph(escape(text),styles['BodySmall'])); markdown.append(text)
     def table(frame,widths):
+        labels={'form':'Form', 'measure':'Measure', 'count':'N', 'mean':'Mean',
+                'std':'SD', 'weighting':'Weighting', 'coefficient':'Coefficient',
+                'se':'SE', 'p':'p-value', 't':'t-statistic', 'n':'N',
+                'ci_low':'95% CI lower', 'ci_high':'95% CI upper'}
+        frame=frame.rename(columns=labels)
         rows=[[Paragraph(escape(str(c)),styles['CellHeader']) for c in frame.columns]]
         for row in frame.itertuples(index=False,name=None):
             cells=[]
             for value in row:
                 text=(f'{value:.4g}' if np.isfinite(value) else 'undefined') if isinstance(value,(float,np.floating)) else str(value)
-                cells.append(Paragraph(escape(text),styles['CellSmall']))
+                numeric=isinstance(value,(int,float,np.integer,np.floating)) and not isinstance(value,(bool,np.bool_))
+                cells.append(Paragraph(escape(text),styles['CellNumber' if numeric else 'CellSmall']))
             rows.append(cells)
+        widths=[width*483/sum(widths) for width in widths]
         t=Table(rows,colWidths=widths,repeatRows=1,hAlign='LEFT')
         t.setStyle(TableStyle([('LINEABOVE',(0,0),(-1,0),.6,colors.black),
             ('VALIGN',(0,0),(-1,-1),'TOP'),('LINEBELOW',(0,0),(-1,0),.4,colors.black),
@@ -66,6 +76,13 @@ def main():
     story.append(Paragraph("Uncertainty and sentiment in ARK portfolio firms' SEC filings",styles['TitleSmall']))
     author='Jonas Wu (jw9452) | FRE-GY 7871 A | Assignment 1 | September 2026'
     story.append(Paragraph(escape(author),styles['Author'])); markdown.append(author)
+    abstract=(f"I study negative language and uncertainty in {audit['final_filings']:,} SEC filings from "
+        f"{audit['final_firms']} ARK portfolio firms during 2021-2025. Within-firm weighted uncertainty declines, "
+        'and controlling for prior volatility reduces the association between uncertainty and subsequent volatility. '
+        'Filing-return estimates remain inconclusive. Company comparisons separate annual and quarterly reports: '
+        'high language shares and high cumulative word counts identify different firms. These retrospective '
+        'associations depend on the retained sample and do not establish causation or trading performance.')
+    story.append(Paragraph('<b>Abstract.</b> '+escape(abstract),styles['Abstract'])); markdown.append('**Abstract.** '+abstract)
     heading('1. Sample and research question')
     paragraph(f"I examine negative language and uncertainty in {audit['final_filings']:,} SEC filings from {audit['final_firms']} firms. "
         f"The sample includes {audit['forms']['10-K']} annual reports and {audit['forms']['10-Q']} quarterly reports filed in 2021-2025. "
@@ -180,7 +197,7 @@ def main():
     rq=row(ret,'10-Q','proportional')
     paragraph(f"The 10-Q proportional estimate has p={rq.p:.4f}. Its interval includes zero at 5%, and I do not count it as evidence of predictive returns. "
         'The broad pooled intervals remain compatible with small negative effects. I regard the return test as inconclusive; that judgment does not imply that the trend and volatility tests lack power.')
-    heading('7. Interpretation and limitations')
+    heading('7. Discussion and limitations')
     paragraph(f"Mean negative and uncertainty fractions are {100*mean('10-K','Negative_proportional'):.2f}% and {100*mean('10-K','Uncertainty_proportional'):.2f}% for 10-Ks, "
         f"versus {100*mean('10-Q','Negative_proportional'):.2f}% and {100*mean('10-Q','Uncertainty_proportional'):.2f}% for 10-Qs. "
         'Different report scopes and repetition offer plausible explanations for these gaps. A difference between significance labels would require a formal interaction test before I could interpret it as a difference between slopes.')
@@ -193,6 +210,55 @@ def main():
         'The reported tone and trend standard errors are finite. The parser, sample selection and retrospective IDF remain sources of uncertainty.')
     paragraph('I place the most weight on the within-firm decline in weighted uncertainty and the attenuation of the volatility coefficient after controlling for pre-volatility. '
         'Historical holdings including exits and a chronological holdout with training-only IDF would help test whether these associations generalise.')
+
+    page()
+    heading('8. Company-level concentration of language')
+    paragraph('I compare issuers on the same complete-case corpus used in the regressions. '
+        'For each firm and report type, I average the fraction of tokens belonging to each dictionary, giving each filing equal weight. '
+        'Table 7 reports the five highest observed means within each form. I count repeated occurrences, rather than distinct dictionary words. '
+        'There is no additional minimum-filing screen; N and calendar-year coverage make sparse samples visible. Ties receive the same rank.')
+    heading('Table 7. Companies with the highest dictionary use',2)
+    for category in ['Negative','Uncertainty']:
+        heading(f'Panel {"A" if category=="Negative" else "B"}. {category} language: mean share by form',2)
+        frame=companies.loc[companies.category.eq(category)&companies.form.ne('All')].copy()
+        frame['Mean (%)']=frame.mean_share_pct.map(lambda x:f'{x:.3f}')
+        frame=frame[['form','rank','company','ticker','filings','years','Mean (%)']]
+        frame.columns=['Form','Rank','Company','Ticker','N','Years','Mean (%)']
+        table(frame,[40,28,245,42,30,35,63])
+    paragraph('Notes: shares are percentages of all parsed tokens in each filing, averaged within firm and form. '
+        'Years counts distinct filing calendar years, not complete annual coverage. Names and tickers follow the retrieved SEC metadata; '
+        'for example, Everpure appears as P and need not carry that label throughout the historical sample. '
+        'The complete issuer summary, including pooled token shares and coverage dates, is in results/company_summary.csv.')
+    page()
+    heading('Table 7. Companies with the highest dictionary use (continued)',2)
+    heading('Panel C. Cumulative occurrences across both report types',2)
+    frame=companies.loc[companies.form.eq('All')].copy()
+    frame['Occurrences']=frame.occurrences.map(lambda x:f'{x:,}')
+    frame['Tokens (m)']=frame.tokens.map(lambda x:f'{x/1e6:.3f}')
+    frame=frame[['category','rank','company','ticker','filings','Occurrences','Tokens (m)']]
+    frame.columns=['Category','Rank','Company','Ticker','N','Occurrences','Tokens (m)']
+    table(frame,[65,28,205,40,25,65,55])
+    def leader(category,form):
+        return companies.loc[companies.category.eq(category)&companies.form.eq(form)&companies['rank'].eq(1)].iloc[0]
+    annual=leader('Negative','10-K'); quarterly=leader('Negative','10-Q')
+    paragraph(f"Negative language differs across report types. {annual.company} ({annual.ticker}) leads the annual-report ranking "
+        f"at {annual.mean_share_pct:.3f}% across {annual.filings} filings. {quarterly.company} ({quarterly.ticker}) leads the quarterly ranking "
+        f"at {quarterly.mean_share_pct:.3f}% across {quarterly.filings} filings. Personalis ranks second in both forms. "
+        'CrowdStrike has no retained annual report in this sample, so its quarterly mean cannot establish a five-year, cross-form lead.')
+    annual=leader('Uncertainty','10-K'); quarterly=leader('Uncertainty','10-Q')
+    paragraph(f"For uncertainty, {annual.company} ({annual.ticker}) has the highest annual-report share, "
+        f"{annual.mean_share_pct:.3f}%, based on {annual.filings} filing. {quarterly.company} ({quarterly.ticker}) leads quarterly reports "
+        f"at {quarterly.mean_share_pct:.3f}% across {quarterly.filings} filings. Pacific Biosciences ranks second in both forms. "
+        'The one-report Oklo estimate describes that observation; it offers little evidence about the stability of the company ranking.')
+    negative=leader('Negative','All'); uncertainty=leader('Uncertainty','All')
+    paragraph(f"Raw totals answer a different question. {negative.company} ({negative.ticker}) contributes the most negative-word occurrences "
+        f"({negative.occurrences:,}), while {uncertainty.company} ({uncertainty.ticker}) contributes the most uncertainty-word occurrences "
+        f"({uncertainty.occurrences:,}). Both appear near the top of the two volume rankings, alongside SoFi and Intellia. "
+        'Longer documents and more retained filings increase these totals. They measure contributions to this corpus, not comparable language intensity.')
+    paragraph('I interpret these as descriptive language differences. The rankings do not show that the leading firms face the most economic risk, '
+        'have the least confident managers, or produce the worst subsequent returns. Repeated risk disclosures, report scope and the parser can affect the shares. '
+        'Different retained years can also affect comparisons within a form. Establishing persistent company differences would require comparable time coverage '
+        'and further inference; I do not report the observed rank gaps as statistically significant.')
     heading('Sources and reproduction',2)
     paragraph('Loughran, T. and B. McDonald (2011), When Is a Liability Not a Liability?, Journal of Finance 66, 35-65, doi:10.1111/j.1540-6261.2010.01625.x. '
         'Inputs: SEC EDGAR, the instructor\'s frozen ARK holdings and LM dictionary, and Yahoo Finance through yfinance. '

@@ -2,6 +2,8 @@
 
 Jonas Wu (jw9452) | FRE-GY 7871 A | Assignment 1 | September 2026
 
+**Abstract.** I study negative language and uncertainty in 1,002 SEC filings from 60 ARK portfolio firms during 2021-2025. Within-firm weighted uncertainty declines, and controlling for prior volatility reduces the association between uncertainty and subsequent volatility. Filing-return estimates remain inconclusive. Company comparisons separate annual and quarterly reports: high language shares and high cumulative word counts identify different firms. These retrospective associations depend on the retained sample and do not establish causation or trading performance.
+
 ## 1. Sample and research question
 
 I examine negative language and uncertainty in 1,002 SEC filings from 60 firms. The sample includes 248 annual reports and 754 quarterly reports filed in 2021-2025. I test changes in language within firms, the association between uncertainty and subsequent volatility, and the association between negative tone and four-day filing returns.
@@ -132,11 +134,11 @@ I use the Loughran-McDonald financial dictionary: 2,355 negative words and 297 u
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th>form</th>
-      <th>measure</th>
-      <th>count</th>
-      <th>mean</th>
-      <th>std</th>
+      <th>Form</th>
+      <th>Measure</th>
+      <th>N</th>
+      <th>Mean</th>
+      <th>SD</th>
       <th>25%</th>
       <th>50%</th>
       <th>75%</th>
@@ -489,13 +491,13 @@ I find the clearest pooled trend in weighted uncertainty. The form-specific esti
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th>form</th>
-      <th>measure</th>
+      <th>Form</th>
+      <th>Measure</th>
       <th>Estimator</th>
-      <th>coefficient</th>
-      <th>t</th>
-      <th>p</th>
-      <th>n</th>
+      <th>Coefficient</th>
+      <th>t-statistic</th>
+      <th>p-value</th>
+      <th>N</th>
     </tr>
   </thead>
   <tbody>
@@ -767,13 +769,13 @@ I regress log post-volatility on uncertainty, log size, log turnover, log token 
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th>form</th>
-      <th>weighting</th>
+      <th>Form</th>
+      <th>Weighting</th>
       <th>Pre-vol?</th>
-      <th>coefficient</th>
-      <th>se</th>
-      <th>p</th>
-      <th>n</th>
+      <th>Coefficient</th>
+      <th>SE</th>
+      <th>p-value</th>
+      <th>N</th>
     </tr>
   </thead>
   <tbody>
@@ -959,13 +961,13 @@ The approximate two-sided 5%, 80%-power minimum detectable effect is (t critical
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
-      <th>form</th>
-      <th>weighting</th>
-      <th>coefficient</th>
-      <th>se</th>
-      <th>p</th>
-      <th>ci_low</th>
-      <th>ci_high</th>
+      <th>Form</th>
+      <th>Weighting</th>
+      <th>Coefficient</th>
+      <th>SE</th>
+      <th>p-value</th>
+      <th>95% CI lower</th>
+      <th>95% CI upper</th>
     </tr>
   </thead>
   <tbody>
@@ -1034,7 +1036,7 @@ The pooled tfidf coefficient is -0.432 return percentage points (95% CI [-2.019,
 
 The 10-Q proportional estimate has p=0.0513. Its interval includes zero at 5%, and I do not count it as evidence of predictive returns. The broad pooled intervals remain compatible with small negative effects. I regard the return test as inconclusive; that judgment does not imply that the trend and volatility tests lack power.
 
-## 7. Interpretation and limitations
+## 7. Discussion and limitations
 
 Mean negative and uncertainty fractions are 2.47% and 2.08% for 10-Ks, versus 1.97% and 1.84% for 10-Qs. Different report scopes and repetition offer plausible explanations for these gaps. A difference between significance labels would require a formal interaction test before I could interpret it as a difference between slopes.
 
@@ -1043,6 +1045,348 @@ The complete-case filters retain 1,002 of 1,683 filing-listing records from 60 f
 SPY proxies for the broad market, and cover-page shares may predate the price used for size. Twenty quarters limit inference about common shocks. Two-way covariance produces undefined standard errors for 101 of 468 control or fixed-effect entries; I leave those entries undefined and do not interpret them. The reported tone and trend standard errors are finite. The parser, sample selection and retrospective IDF remain sources of uncertainty.
 
 I place the most weight on the within-firm decline in weighted uncertainty and the attenuation of the volatility coefficient after controlling for pre-volatility. Historical holdings including exits and a chronological holdout with training-only IDF would help test whether these associations generalise.
+
+## 8. Company-level concentration of language
+
+I compare issuers on the same complete-case corpus used in the regressions. For each firm and report type, I average the fraction of tokens belonging to each dictionary, giving each filing equal weight. Table 7 reports the five highest observed means within each form. I count repeated occurrences, rather than distinct dictionary words. There is no additional minimum-filing screen; N and calendar-year coverage make sparse samples visible. Ties receive the same rank.
+
+### Table 7. Companies with the highest dictionary use
+
+### Panel A. Negative language: mean share by form
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Form</th>
+      <th>Rank</th>
+      <th>Company</th>
+      <th>Ticker</th>
+      <th>N</th>
+      <th>Years</th>
+      <th>Mean (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10-K</td>
+      <td>1</td>
+      <td>GeneDx Holdings Corp.</td>
+      <td>WGS</td>
+      <td>2</td>
+      <td>2</td>
+      <td>3.204</td>
+    </tr>
+    <tr>
+      <td>10-K</td>
+      <td>2</td>
+      <td>Personalis, Inc.</td>
+      <td>PSNL</td>
+      <td>4</td>
+      <td>4</td>
+      <td>3.171</td>
+    </tr>
+    <tr>
+      <td>10-K</td>
+      <td>3</td>
+      <td>Adaptive Biotechnologies Corp</td>
+      <td>ADPT</td>
+      <td>5</td>
+      <td>5</td>
+      <td>3.016</td>
+    </tr>
+    <tr>
+      <td>10-K</td>
+      <td>4</td>
+      <td>KRATOS DEFENSE &amp; SECURITY SOLUTIONS, INC.</td>
+      <td>KTOS</td>
+      <td>5</td>
+      <td>5</td>
+      <td>3.013</td>
+    </tr>
+    <tr>
+      <td>10-K</td>
+      <td>5</td>
+      <td>CareDx, Inc.</td>
+      <td>CDNA</td>
+      <td>5</td>
+      <td>5</td>
+      <td>2.983</td>
+    </tr>
+    <tr>
+      <td>10-Q</td>
+      <td>1</td>
+      <td>CrowdStrike Holdings, Inc.</td>
+      <td>CRWD</td>
+      <td>3</td>
+      <td>1</td>
+      <td>4.033</td>
+    </tr>
+    <tr>
+      <td>10-Q</td>
+      <td>2</td>
+      <td>Personalis, Inc.</td>
+      <td>PSNL</td>
+      <td>9</td>
+      <td>4</td>
+      <td>3.901</td>
+    </tr>
+    <tr>
+      <td>10-Q</td>
+      <td>3</td>
+      <td>PACIFIC BIOSCIENCES OF CALIFORNIA, INC.</td>
+      <td>PACB</td>
+      <td>9</td>
+      <td>3</td>
+      <td>3.664</td>
+    </tr>
+    <tr>
+      <td>10-Q</td>
+      <td>4</td>
+      <td>ADVANCED MICRO DEVICES INC</td>
+      <td>AMD</td>
+      <td>15</td>
+      <td>5</td>
+      <td>3.612</td>
+    </tr>
+    <tr>
+      <td>10-Q</td>
+      <td>5</td>
+      <td>Broadcom Inc.</td>
+      <td>AVGO</td>
+      <td>15</td>
+      <td>5</td>
+      <td>3.558</td>
+    </tr>
+  </tbody>
+</table>
+
+### Panel B. Uncertainty language: mean share by form
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Form</th>
+      <th>Rank</th>
+      <th>Company</th>
+      <th>Ticker</th>
+      <th>N</th>
+      <th>Years</th>
+      <th>Mean (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10-K</td>
+      <td>1</td>
+      <td>Oklo Inc.</td>
+      <td>OKLO</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2.795</td>
+    </tr>
+    <tr>
+      <td>10-K</td>
+      <td>2</td>
+      <td>PACIFIC BIOSCIENCES OF CALIFORNIA, INC.</td>
+      <td>PACB</td>
+      <td>4</td>
+      <td>4</td>
+      <td>2.620</td>
+    </tr>
+    <tr>
+      <td>10-K</td>
+      <td>3</td>
+      <td>BITMINE IMMERSION TECHNOLOGIES, INC.</td>
+      <td>BMNR</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2.582</td>
+    </tr>
+    <tr>
+      <td>10-K</td>
+      <td>4</td>
+      <td>Absci Corp</td>
+      <td>ABSI</td>
+      <td>3</td>
+      <td>3</td>
+      <td>2.533</td>
+    </tr>
+    <tr>
+      <td>10-K</td>
+      <td>5</td>
+      <td>KRATOS DEFENSE &amp; SECURITY SOLUTIONS, INC.</td>
+      <td>KTOS</td>
+      <td>5</td>
+      <td>5</td>
+      <td>2.462</td>
+    </tr>
+    <tr>
+      <td>10-Q</td>
+      <td>1</td>
+      <td>Broadcom Inc.</td>
+      <td>AVGO</td>
+      <td>15</td>
+      <td>5</td>
+      <td>3.151</td>
+    </tr>
+    <tr>
+      <td>10-Q</td>
+      <td>2</td>
+      <td>PACIFIC BIOSCIENCES OF CALIFORNIA, INC.</td>
+      <td>PACB</td>
+      <td>9</td>
+      <td>3</td>
+      <td>2.949</td>
+    </tr>
+    <tr>
+      <td>10-Q</td>
+      <td>3</td>
+      <td>Nurix Therapeutics, Inc.</td>
+      <td>NRIX</td>
+      <td>15</td>
+      <td>5</td>
+      <td>2.933</td>
+    </tr>
+    <tr>
+      <td>10-Q</td>
+      <td>4</td>
+      <td>ADVANCED MICRO DEVICES INC</td>
+      <td>AMD</td>
+      <td>15</td>
+      <td>5</td>
+      <td>2.917</td>
+    </tr>
+    <tr>
+      <td>10-Q</td>
+      <td>5</td>
+      <td>Everpure, Inc.</td>
+      <td>P</td>
+      <td>15</td>
+      <td>5</td>
+      <td>2.842</td>
+    </tr>
+  </tbody>
+</table>
+
+Notes: shares are percentages of all parsed tokens in each filing, averaged within firm and form. Years counts distinct filing calendar years, not complete annual coverage. Names and tickers follow the retrieved SEC metadata; for example, Everpure appears as P and need not carry that label throughout the historical sample. The complete issuer summary, including pooled token shares and coverage dates, is in results/company_summary.csv.
+
+### Table 7. Companies with the highest dictionary use (continued)
+
+### Panel C. Cumulative occurrences across both report types
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Category</th>
+      <th>Rank</th>
+      <th>Company</th>
+      <th>Ticker</th>
+      <th>N</th>
+      <th>Occurrences</th>
+      <th>Tokens (m)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Negative</td>
+      <td>1</td>
+      <td>COMPASS Pathways plc</td>
+      <td>CMPS</td>
+      <td>16</td>
+      <td>40,359</td>
+      <td>1.268</td>
+    </tr>
+    <tr>
+      <td>Negative</td>
+      <td>2</td>
+      <td>Nurix Therapeutics, Inc.</td>
+      <td>NRIX</td>
+      <td>20</td>
+      <td>38,495</td>
+      <td>1.239</td>
+    </tr>
+    <tr>
+      <td>Negative</td>
+      <td>3</td>
+      <td>SoFi Technologies, Inc.</td>
+      <td>SOFI</td>
+      <td>18</td>
+      <td>35,013</td>
+      <td>1.259</td>
+    </tr>
+    <tr>
+      <td>Negative</td>
+      <td>4</td>
+      <td>Intellia Therapeutics, Inc.</td>
+      <td>NTLA</td>
+      <td>20</td>
+      <td>31,300</td>
+      <td>1.023</td>
+    </tr>
+    <tr>
+      <td>Negative</td>
+      <td>5</td>
+      <td>Personalis, Inc.</td>
+      <td>PSNL</td>
+      <td>13</td>
+      <td>24,930</td>
+      <td>0.689</td>
+    </tr>
+    <tr>
+      <td>Uncertainty</td>
+      <td>1</td>
+      <td>Nurix Therapeutics, Inc.</td>
+      <td>NRIX</td>
+      <td>20</td>
+      <td>33,316</td>
+      <td>1.239</td>
+    </tr>
+    <tr>
+      <td>Uncertainty</td>
+      <td>2</td>
+      <td>COMPASS Pathways plc</td>
+      <td>CMPS</td>
+      <td>16</td>
+      <td>31,803</td>
+      <td>1.268</td>
+    </tr>
+    <tr>
+      <td>Uncertainty</td>
+      <td>3</td>
+      <td>SoFi Technologies, Inc.</td>
+      <td>SOFI</td>
+      <td>18</td>
+      <td>28,362</td>
+      <td>1.259</td>
+    </tr>
+    <tr>
+      <td>Uncertainty</td>
+      <td>4</td>
+      <td>Intellia Therapeutics, Inc.</td>
+      <td>NTLA</td>
+      <td>20</td>
+      <td>25,083</td>
+      <td>1.023</td>
+    </tr>
+    <tr>
+      <td>Uncertainty</td>
+      <td>5</td>
+      <td>VERACYTE, INC.</td>
+      <td>VCYT</td>
+      <td>20</td>
+      <td>19,876</td>
+      <td>0.835</td>
+    </tr>
+  </tbody>
+</table>
+
+Negative language differs across report types. GeneDx Holdings Corp. (WGS) leads the annual-report ranking at 3.204% across 2 filings. CrowdStrike Holdings, Inc. (CRWD) leads the quarterly ranking at 4.033% across 3 filings. Personalis ranks second in both forms. CrowdStrike has no retained annual report in this sample, so its quarterly mean cannot establish a five-year, cross-form lead.
+
+For uncertainty, Oklo Inc. (OKLO) has the highest annual-report share, 2.795%, based on 1 filing. Broadcom Inc. (AVGO) leads quarterly reports at 3.151% across 15 filings. Pacific Biosciences ranks second in both forms. The one-report Oklo estimate describes that observation; it offers little evidence about the stability of the company ranking.
+
+Raw totals answer a different question. COMPASS Pathways plc (CMPS) contributes the most negative-word occurrences (40,359), while Nurix Therapeutics, Inc. (NRIX) contributes the most uncertainty-word occurrences (33,316). Both appear near the top of the two volume rankings, alongside SoFi and Intellia. Longer documents and more retained filings increase these totals. They measure contributions to this corpus, not comparable language intensity.
+
+I interpret these as descriptive language differences. The rankings do not show that the leading firms face the most economic risk, have the least confident managers, or produce the worst subsequent returns. Repeated risk disclosures, report scope and the parser can affect the shares. Different retained years can also affect comparisons within a form. Establishing persistent company differences would require comparable time coverage and further inference; I do not report the observed rank gaps as statistically significant.
 
 ### Sources and reproduction
 

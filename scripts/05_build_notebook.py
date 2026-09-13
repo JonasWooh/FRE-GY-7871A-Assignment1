@@ -63,6 +63,12 @@ def main():
            "tone change. This is a design-sensitivity calculation using estimated noise, not observed post-hoc power. "
            "The controls match Table 5 and include pre-volatility."),
         code("show('table6_power')\nshow('table6_returns')"),
+        md("## Company comparison\n\nRank issuers by mean filing-level dictionary share within each form. "
+           "Count repeated occurrences, not distinct words. Show coverage without an extra minimum-filing filter. "
+           "Separately rank pooled raw counts, which depend on report length and number of filings. "
+           "These are descriptive rankings of the retained sample, not tests of company risk or management confidence. "
+           "Company names and tickers follow the retrieved SEC metadata and need not be historical labels."),
+        code("show('company_top5')"),
         md("## Full regression coefficients and reproducibility\n\nAll specifications run are saved, including "
            "nuisance controls and fixed effects, in `results/regression_all_terms.csv`. No p-value-based model selection "
            "or covariance repairs are performed. ARKK excess return is constructed but is not an additional fitted test. "

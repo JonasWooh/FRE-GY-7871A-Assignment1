@@ -264,6 +264,8 @@ def run():
     meta.to_csv(INTERIM_DIR / "analysis_sample.csv", index=False)
     excluded.to_csv(INTERIM_DIR / "analysis_exclusions.csv", index=False)
     tables = make_exhibits(meta, prices)
+    from .company_comparison import company_tables
+    tables.update(company_tables(meta))
     tables["table1_waterfall"] = waterfall
     resolution = pd.read_csv(UNIVERSE_DIR / "holding_resolution.csv", dtype={"cik": str}).fillna("")
     tables["table1_holdings"] = resolution

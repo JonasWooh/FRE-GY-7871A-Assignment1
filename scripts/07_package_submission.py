@@ -15,7 +15,8 @@ OUT = ROOT / 'submission'
 EXHIBITS = ['table1_waterfall', 'table1_holdings', 'table1_excluded_holdings',
             'table2_summary', 'table2_correlations', 'table3_words', 'table4_trends',
             'table5_volatility', 'table6_returns', 'table6_power', 'regressions',
-            'regression_all_terms', 'quarterly_means', 'quarterly_within_baseline']
+            'regression_all_terms', 'quarterly_means', 'quarterly_within_baseline',
+            'company_summary', 'company_top5']
 
 
 def require(condition, message):
@@ -61,7 +62,7 @@ def main():
                      for cell in cells for output in cell.outputs)
     for name in ['table1_waterfall', 'table1_excluded_holdings', 'table2_summary',
                  'table2_correlations', 'table3_words', 'table4_trends',
-                 'table5_volatility', 'table6_returns', 'table6_power']:
+                 'table5_volatility', 'table6_returns', 'table6_power', 'company_top5']:
         frame = tables[name]
         if name == 'table1_excluded_holdings':
             frame = frame.fillna('')
@@ -72,6 +73,11 @@ def main():
     text = '\n'.join(page.extract_text() for page in pdf.pages)
     for label in [f'Table {i}.' for i in range(1, 7)] + ['Figure 1.']:
         require(label in text, f'Report missing {label}')
+    require('Table 7.' in text, 'Report missing company comparison')
+    for record in tables['company_top5'].itertuples():
+        require(record.ticker in text, f'Report missing ranked ticker: {record.ticker}')
+        displayed = f'{record.occurrences:,}' if record.form == 'All' else f'{record.mean_share_pct:.3f}'
+        require(displayed in text, f'Report missing company statistic: {displayed}')
     require(f"{audit['final_filings']:,}" in text, 'Report sample is stale')
     appendix = text[text.index('Appendix to Table 1.'):]
     require(all(cik in appendix for cik in excluded.cik.dropna()), 'Report loses CIK precision')
